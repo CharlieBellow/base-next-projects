@@ -14,6 +14,7 @@
     "prettier": "prettier --write \"src/**/*.{js,ts,jsx,tsx}\""
   },
   "dependencies": {
+    "json-server": "1.0.0-beta.3",
     "next": "15.4.1",
     "react": "19.1.0",
     "react-dom": "19.1.0"
