@@ -1,38 +1,31 @@
-import type { Adapter } from "next-auth/adapters";
+import type { Adapter, AdapterAccount, AdapterUser } from "next-auth/adapters";
 
 const JSON_SERVER_URL = process.env.JSON_SERVER_URL || "http://localhost:3001";
 
 // Função auxiliar para fazer requisições ao json-server
 async function fetchJsonServer(endpoint: string, options?: RequestInit) {
-  try {
-    const response = await fetch(`${JSON_SERVER_URL}${endpoint}`, {
-      headers: {
-        "Content-Type": "application/json",
-        ...options?.headers,
-      },
-      ...options,
-    });
+  const response = await fetch(`${JSON_SERVER_URL}${endpoint}`, {
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+    ...options,
+  });
 
-    if (!response.ok) {
-      console.error(`JSON Server error: ${response.status} - ${response.statusText}`);
-      throw new Error(`JSON Server error: ${response.status}`);
-    }
-
-    const contentType = response.headers.get("content-type");
-    if (!contentType || !contentType.includes("application/json")) {
-      console.error(`Expected JSON but got: ${contentType}`);
-      throw new Error("Expected JSON response");
-    }
-
-    return response.json();
-  } catch (error) {
-    console.error("Error connecting to JSON Server:", error);
-    throw error;
+  if (!response.ok) {
+    throw new Error(`JSON Server error: ${response.status}`);
   }
+
+  const contentType = response.headers.get("content-type");
+  if (!contentType || !contentType.includes("application/json")) {
+    throw new Error("Expected JSON response");
+  }
+
+  return response.json();
 }
 export function JsonServerAdapter(): Adapter {
   return {
-    async createUser(user: any) {
+    async createUser(user: Omit<AdapterUser, "id">) {
       const newUser = {
         id: crypto.randomUUID(),
         name: user.name,
@@ -117,7 +110,7 @@ export function JsonServerAdapter(): Adapter {
       };
     },
 
-    async linkAccount(account: any) {
+    async linkAccount(account: AdapterAccount) {
       const newAccount = {
         id: crypto.randomUUID(),
         userId: account.userId,

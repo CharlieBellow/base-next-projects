@@ -6,16 +6,6 @@ const useJsonServer =
   process.env.NODE_ENV === "development" && process.env.USE_JSON_SERVER === "true";
 
 export const authOptions: NextAuthOptions = {
-  // Só importa o DrizzleAdapter e db quando necessário
-  ...(useJsonServer
-    ? {}
-    : {
-        adapter: (() => {
-          const { DrizzleAdapter } = require("@auth/drizzle-adapter");
-          const { db } = require("@/db");
-          return DrizzleAdapter(db);
-        })(),
-      }),
   providers: [
     GitHub({
       clientId: process.env.GITHUB_ID!,
