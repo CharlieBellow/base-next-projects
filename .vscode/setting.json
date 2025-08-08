@@ -6,7 +6,7 @@
 },
 "prettier.tabWidth": 2,
 "prettier.semi": false,
-"prettier.singleQuote": false,
+"prettier.singleQuote": true,
 "prettier.raillingComa": "none",
 "prettier.endOfLine": "auto"
 }
